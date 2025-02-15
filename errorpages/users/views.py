@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from .forms import CustomUserCreationForm, CustomUserLoginForm
 from django.contrib.auth.decorators import login_required
+import json
+from .message import message as Message
 
 def register_view(request):
     if request.method == 'POST':
@@ -32,3 +34,13 @@ def logout_view(request):
 @login_required
 def home_view(request):
     return render(request, 'home.html')
+
+def logout_view(request):
+    logout(request)
+    message = {
+        "type": "info",
+        "message": "Se ha cerrado sesión exitosamente",
+        "code": 200,
+        "img": "https://png.pngtree.com/png-vector/20220520/ourmid/pngtree-happy-emoji-emoticon-showing-double-thumbs-up-like-png-image_4708251.png"
+    }
+    return render(request, "login.html", {"message": message})
