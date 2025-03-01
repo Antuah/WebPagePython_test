@@ -3,9 +3,10 @@ from .views import *
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
-#Registrar el path comun para la vista de Producto
-router.register(r'api', ProductoViewSet)
+#Registrar el path comun para la vista de Alumno
+router.register(r'api', AlumnoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('index/', index, name='index'),
 ]
