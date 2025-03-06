@@ -8,4 +8,5 @@ router.register(r'api', ProductoViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('agregar/', agregar_producto, name='agregar_producto'),
 ]
