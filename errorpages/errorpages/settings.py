@@ -48,9 +48,18 @@ INSTALLED_APPS = [
     'categorias',
     'alumnos',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +68,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'errorpages.urls'
 
@@ -138,9 +149,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 HANDLER404 = 'app.views.error_404_view'
 HANDLER500 = 'app.views.error_500_view'
-
-
-
 
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/home'

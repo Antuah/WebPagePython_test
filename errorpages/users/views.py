@@ -1,46 +1,28 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
-from .forms import CustomUserCreationForm, CustomUserLoginForm
-from django.contrib.auth.decorators import login_required
-import json
-from .message import message as Message
+from .models import CustomUser
+from rest_framework.renderers import JSONRenderer
+from rest_framework import viewsets
+from .serializers import CustomTokenObtainPairSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .serializers import CustomUserSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-def register_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)  # Iniciar sesión después del registro
-            return redirect('home')  # Redirigir a la página principal
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+#Clase que hace las vistas get/put/post/delete
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    renderer_classes = [JSONRenderer]
+    serializer_class = CustomUserSerializer
 
-def login_view(request):
-    if request.method == 'POST':
-        form = CustomUserLoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = CustomUserLoginForm()
-    return render(request, 'login.html', {'form': form})
+    #Variables nuevas para la autenticacion
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+    #Sobre escribir el metodo get_permissions
+    def get_permissions(self):
+        if self.request.method in ['POST', 'PUT', 'DELETE']:
+            return [IsAuthenticated()]
+        return []
+    
 
-@login_required
-def home_view(request):
-    return render(request, 'home.html')
-
-def logout_view(request):
-    logout(request)
-    message = {
-        "type": "info",
-        "message": "Se ha cerrado sesión exitosamente",
-        "code": 200,
-        "img": "https://png.pngtree.com/png-vector/20220520/ourmid/pngtree-happy-emoji-emoticon-showing-double-thumbs-up-like-png-image_4708251.png"
-    }
-    return render(request, "login.html", {"message": message})
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

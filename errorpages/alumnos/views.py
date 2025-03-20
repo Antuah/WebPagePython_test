@@ -1,8 +1,8 @@
 from .models import alumno
 from .serializers import AlumnoSerializer
 from rest_framework import viewsets #Vamos a crear una vista de varial al mismo tiempo
-from rest_framework.renderers import JSONRenderer
 from django.shortcuts import render
+from rest_framework.renderers import JSONRenderer
 
 class AlumnoViewSet(viewsets.ModelViewSet):
     #1 Saber a que objeto hago referencia
